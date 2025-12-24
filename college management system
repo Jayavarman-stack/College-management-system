@@ -1,0 +1,202 @@
+#include <iostream>
+#include <map>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+// ---------------- Student Class ----------------
+class Student {
+private:
+    string id;
+    string name;
+
+public:
+    Student() {}
+
+    Student(string sid, string sname) {
+        id = sid;
+        name = sname;
+    }
+
+    string getId() const {
+        return id;
+    }
+
+    string getName() const {
+        return name;
+    }
+
+    void display() const {
+        cout << id << " - " << name << endl;
+    }
+};
+
+// ---------------- Course Class ----------------
+class Course {
+private:
+    string id;
+    string title;
+
+public:
+    Course() {}
+
+    Course(string cid, string ctitle) {
+        id = cid;
+        title = ctitle;
+    }
+
+    string getId() const {
+        return id;
+    }
+
+    string getTitle() const {
+        return title;
+    }
+
+    void display() const {
+        cout << id << " - " << title << endl;
+    }
+};
+
+// -------- College Management System Class --------
+class CollegeManagementSystem {
+private:
+    map<string, Student> students;
+    map<string, Course> courses;
+    map<string, vector<string>> enrollments;
+
+public:
+    void addStudent() {
+        string id, name;
+        cout << "Enter Student ID: ";
+        cin >> id;
+        cin.ignore();
+
+        cout << "Enter Student Name: ";
+        getline(cin, name);
+
+        students[id] = Student(id, name);
+        cout << "✅ Student added successfully\n";
+    }
+
+    void addCourse() {
+        string id, title;
+        cout << "Enter Course ID: ";
+        cin >> id;
+        cin.ignore();
+
+        cout << "Enter Course Title: ";
+        getline(cin, title);
+
+        courses[id] = Course(id, title);
+        cout << "✅ Course added successfully\n";
+    }
+
+    void enrollStudent() {
+        string sid, cid;
+        cout << "Enter Student ID: ";
+        cin >> sid;
+
+        cout << "Enter Course ID: ";
+        cin >> cid;
+
+        if (students.find(sid) == students.end()) {
+            cout << "❌ Student not found\n";
+            return;
+        }
+
+        if (courses.find(cid) == courses.end()) {
+            cout << "❌ Course not found\n";
+            return;
+        }
+
+        enrollments[sid].push_back(cid);
+        cout << "✅ Student enrolled successfully\n";
+    }
+
+    void viewStudents() {
+        cout << "\n--- Students List ---\n";
+        if (students.empty()) {
+            cout << "No students available\n";
+            return;
+        }
+        for (const auto &s : students) {
+            s.second.display();
+        }
+    }
+
+    void viewCourses() {
+        cout << "\n--- Courses List ---\n";
+        if (courses.empty()) {
+            cout << "No courses available\n";
+            return;
+        }
+        for (const auto &c : courses) {
+            c.second.display();
+        }
+    }
+
+    void viewEnrollments() {
+        cout << "\n--- Enrollments ---\n";
+        if (enrollments.empty()) {
+            cout << "No enrollments available\n";
+            return;
+        }
+
+        for (const auto &e : enrollments) {
+            cout << students[e.first].getName() << " -> ";
+            for (const string &cid : e.second) {
+                cout << courses[cid].getTitle() << " ";
+            }
+            cout << endl;
+        }
+    }
+};
+
+// ---------------- MAIN FUNCTION ----------------
+int main() {
+    CollegeManagementSystem cms;
+    int choice;
+
+    do {
+        cout << "\n===== College Management System =====\n";
+        cout << "1. Add Student\n";
+        cout << "2. Add Course\n";
+        cout << "3. Enroll Student\n";
+        cout << "4. View Students\n";
+        cout << "5. View Courses\n";
+        cout << "6. View Enrollments\n";
+        cout << "7. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cms.addStudent();
+                break;
+            case 2:
+                cms.addCourse();
+                break;
+            case 3:
+                cms.enrollStudent();
+                break;
+            case 4:
+                cms.viewStudents();
+                break;
+            case 5:
+                cms.viewCourses();
+                break;
+            case 6:
+                cms.viewEnrollments();
+                break;
+            case 7:
+                cout << "Exiting program...\n";
+                break;
+            default:
+                cout << "Invalid choice\n";
+        }
+    } while (choice != 7);
+
+    return 0;
+}
